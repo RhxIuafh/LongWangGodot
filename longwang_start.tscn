@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://cdhxp7rio1xba"]
+
+[ext_resource type="Script" uid="uid://d3hc4olac2pic" path="res://start_screen.gd" id="1_3bgt4"]
+[ext_resource type="Script" uid="uid://dvimkp65etmna" path="res://start_button.gd" id="2_8lvxe"]
+[ext_resource type="PackedScene" uid="uid://s84xp1ngwgi1" path="res://longwang_select.tscn" id="2_sbqkv"]
+
+[node name="Node2D" type="Node2D" unique_id=1777411524]
+
+[node name="StartScreen" type="Control" parent="." unique_id=718126206]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_3bgt4")
+next_scene = ExtResource("2_sbqkv")
+
+[node name="TtileLabel" type="Label" parent="StartScreen" unique_id=1391723700]
+layout_mode = 0
+offset_left = 440.0
+offset_top = 91.0
+offset_right = 743.0
+offset_bottom = 158.0
+theme_override_colors/font_color = Color(0.17508492, 0.66915876, 0.78147656, 1)
+theme_override_font_sizes/font_size = 48
+text = "龙王-龙脉斗祭"
+
+[node name="ButtonContainer" type="VBoxContainer" parent="StartScreen" unique_id=17342235]
+layout_mode = 0
+offset_left = 498.0
+offset_top = 255.0
+offset_right = 691.0
+offset_bottom = 345.0
+theme_override_constants/separation = 50
+
+[node name="StartButton" type="Button" parent="StartScreen/ButtonContainer" unique_id=954251632]
+layout_mode = 2
+text = "开始游戏"
+script = ExtResource("2_8lvxe")
+
+[node name="ExitButton" type="Button" parent="StartScreen/ButtonContainer" unique_id=482941460]
+layout_mode = 2
+text = "离开游戏"

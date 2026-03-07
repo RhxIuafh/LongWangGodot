@@ -1,0 +1,78 @@
+[gd_scene format=3 uid="uid://cyegncllpxmfj"]
+
+[ext_resource type="Script" uid="uid://70hr87t7rxst" path="res://battle_manager.gd" id="1_em3u6"]
+
+[node name="Node2D" type="Node2D" unique_id=1196693340]
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=381280641]
+
+[node name="Background" type="ColorRect" parent="." unique_id=1082618716]
+offset_left = -1.0
+offset_top = -1.0
+offset_right = 1199.0
+offset_bottom = 699.0
+color = Color(0.74697053, 0.77743393, 0.78809744, 1)
+
+[node name="CardTable" type="Panel" parent="." unique_id=1402429558]
+offset_left = 251.0
+offset_top = 84.0
+offset_right = 951.0
+offset_bottom = 534.0
+
+[node name="GameWorld" type="Node2D" parent="." unique_id=254849871]
+
+[node name="P1_HeroContainer" type="Node2D" parent="GameWorld" unique_id=2108229332]
+position = Vector2(49, 300)
+
+[node name="P1_HeroCard" type="TextureRect" parent="GameWorld/P1_HeroContainer" unique_id=1800055335]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="P1_HandContainer" type="HFlowContainer" parent="GameWorld/P1_HeroContainer" unique_id=295851239]
+offset_left = -229.0
+offset_top = 10.0
+offset_right = 271.0
+offset_bottom = 160.0
+
+[node name="CenterInfo" type="Node2D" parent="GameWorld" unique_id=231841757]
+position = Vector2(525, 200)
+
+[node name="DistanceLabel" type="Label" parent="GameWorld/CenterInfo" unique_id=1920850149]
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="DiceContainer" type="HBoxContainer" parent="GameWorld/CenterInfo" unique_id=1711981080]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="P2_HeroContainer" type="Node2D" parent="GameWorld" unique_id=1281744934]
+position = Vector2(1017, 300)
+
+[node name="P2_HeroCard" type="TextureRect" parent="GameWorld/P2_HeroContainer" unique_id=341556023]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="P2_HandContainer" type="HFlowContainer" parent="GameWorld/P2_HeroContainer" unique_id=2129210917]
+offset_left = -174.0
+offset_top = 24.0
+offset_right = 326.0
+offset_bottom = 174.0
+
+[node name="UI_Layer" type="CanvasLayer" parent="." unique_id=848472694]
+
+[node name="TurnButton" type="Button" parent="UI_Layer" unique_id=1611237913]
+offset_left = 1056.0
+offset_top = 568.0
+offset_right = 1106.0
+offset_bottom = 618.0
+
+[node name="MessageLabel" type="Label" parent="UI_Layer" unique_id=1296384504]
+offset_left = 900.0
+offset_top = 581.0
+offset_right = 1034.0
+offset_bottom = 604.0
+theme_override_colors/font_color = Color(0.8402966, 0.54277915, 0.4151498, 1)
+text = "P1 出牌中 / 结算中"
+
+[node name="BattleManager" type="Node2D" parent="." unique_id=1476977004]
+script = ExtResource("1_em3u6")

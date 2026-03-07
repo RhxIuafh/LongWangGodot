@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://bdqoouptsc2op"]
+
+[node name="Node2D" type="Node2D" unique_id=1517017352]
+
+[node name="Label" type="Label" parent="." unique_id=1475363171]
+offset_left = 488.0
+offset_top = 119.0
+offset_right = 552.0
+offset_bottom = 142.0
+text = "设置页面"
