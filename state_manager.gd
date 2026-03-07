@@ -1,11 +1,10 @@
 extends Node2D
 
-# --- 导出变量 (在编辑器中配置) ---
+#导出变量
 @export var settings_scene: PackedScene # 设置场景
 @export var longwang_battle: PackedScene   # 第三个场景（战斗场景）
 
-# 假设你有一组英雄图片，这里用占位符，实际使用时请替换为真实资源
-# 格式：{ "name": "英雄名", "texture": load("res://path/to/image.png") }
+# 这里用占位符，实际使用时替换为真实资源
 var heroes_data = [
 	{"name": "高尔", "texture": preload("res://icon.svg")}, 
 	{"name": "伊莱恩", "texture": preload("res://icon.svg")},
@@ -95,7 +94,7 @@ func _on_card_pressed(data: Dictionary) -> void:
 		
 	update_title()
 
-# --- 按钮回调 ---
+
 func _on_confirm_button_pressed() -> void:
 	print("按下")
 	if p1_selection and p2_selection:
@@ -109,9 +108,9 @@ func _on_settings_button_pressed() -> void:
 	print("按下")
 	if settings_scene:
 		get_tree().change_scene_to_packed(settings_scene)
-	# 注意：从设置页回来后可能需要重新初始化状态，这取决于你的设置页怎么返回
 
-# 记得在编辑器里连接按钮的 pressed 信号，或者在这里手动连接
+
+
 func _setup_signals() -> void:
 	confirm_button.pressed.connect(_on_confirm_button_pressed)
 	settings_button.pressed.connect(_on_settings_button_pressed)

@@ -1,6 +1,6 @@
 extends Node2D
 
-# --- 导出变量 (在编辑器拖拽资源) ---
+# 导出变量
 @export var card_scene: PackedScene # 卡牌的预制体场景
 @export var dice_textures: Array[Texture2D] # [红, 绿, 蓝] 骰子纹理
 
@@ -63,7 +63,7 @@ func setup_ui() -> void:
 	p1_hand_container.visible = false
 	p2_hand_container.visible = false
 
-# --- 回合流程控制 ---
+# 回合流程控制
 func start_round() -> void:
 	round_number += 1
 	p1_played_card.clear()
@@ -116,20 +116,19 @@ func _on_turn_button_pressed() -> void:
 			# 结算完毕，下一回合
 			start_round()
 
-# --- 核心逻辑：出牌与动画 ---
+# 核心逻辑：出牌与动画
 func play_card_animation_and_resolve() -> void:
-	# 1. 将选中的牌从手牌区移动到“牌桌”中间 (模拟盖牌动作)
 	# 这里简化为：隐藏手牌区的牌，在中间生成盖住的牌
 	await move_cards_to_table()
 	
-	# 2. 等待一小会儿，然后亮牌
+	# 等待一小会儿，然后亮牌
 	await get_tree().create_timer(1.0).timeout
 	reveal_cards()
 	
-	# 3. 结算逻辑
+	# 3结算逻辑
 	resolve_combat()
 	
-	# 4. 恢复按钮，等待玩家点击“下一回合”
+	# 恢复按钮，等待玩家点击“下一回合”
 	current_state = TurnState.RESOLVING # 保持状态直到点击按钮
 	update_ui_text("结算完成！点击按钮进入下一回合")
 	turn_button.disabled = false
@@ -139,7 +138,7 @@ func play_card_animation_and_resolve() -> void:
 	move_camera_to(center_pos.global_position)
 
 func move_cards_to_table() -> void:
-	# 实际项目中这里应该使用 Tween 将具体的卡牌节点飞到中间
+	# 使用 Tween 将具体的卡牌节点飞到中间
 	# 这里做逻辑示意：
 	print("P1 打出:", p1_played_card.get("name"))
 	print("P2 打出:", p2_played_card.get("name"))
@@ -156,7 +155,7 @@ func move_cards_to_table() -> void:
 func reveal_cards() -> void:
 	# 将中间的背面卡牌翻转为正面
 	print("亮牌！")
-	# 此处逻辑：修改中间卡牌节点的 texture 为正面图
+	# 修改中间卡牌节点的 texture 为正面图
 	flip_center_cards_to_face_up()
 
 func resolve_combat() -> void:
@@ -173,9 +172,9 @@ func resolve_combat() -> void:
 		result_text = "平局！"
 	
 	message_label.text = "结果: %s (P1:%d vs P2:%d)" % [result_text, p1_power, p2_power]
-	# 可以在这里播放受击动画、扣血等
+	# 这里播放受击动画、扣血
 
-# --- 辅助功能 ---
+# 辅助功能
 
 # 渲染手牌
 func render_hand(container: HFlowContainer, hand_data: Array, is_visible_face: bool) -> void:
@@ -205,9 +204,6 @@ func _on_card_selected(card_data: Dictionary, container: HFlowContainer) -> void
 		p1_played_card = card_data
 		highlight_selected_card(container, card_data)
 		message_label.text = "P1 已选牌，请点击过回合让 P2 出牌"
-		# 注意：根据你的设计，是选完立刻盖牌，还是等点按钮？
-		# 你的需求是：P1出->P2出->点按钮->盖牌->亮牌
-		# 所以这里只是标记选中，不立刻移除
 		
 	elif current_state == TurnState.P2_TURN and container == p2_hand_container:
 		p2_played_card = card_data
@@ -244,7 +240,7 @@ func roll_dice() -> void:
 		if dice_nodes[i]:
 			dice_nodes[i].texture = dice_textures[randi() % dice_textures.size()]
 
-# 占位函数 (需要你自己实现具体的节点操作)
+# 占位函数 (实现具体的节点操作)
 func hide_played_card_in_hand(container: HFlowContainer, data: Dictionary): pass
 func create_face_down_card_at_center(): pass
 func flip_center_cards_to_face_up(): pass

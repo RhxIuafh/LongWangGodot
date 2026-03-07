@@ -16,7 +16,6 @@ func _on_start_game_pressed() -> void:
 		get_tree().change_scene_to_packed(next_scene)
 	else:
 		push_warning("未在 Inspector 中分配 next_scene 变量！无法跳转。")
-		# 如果没有分配场景，为了测试，我们可以尝试加载名为 "Scene2" 的场景（假设文件名如此）
 		# get_tree().change_scene_to_file("res://Scene2.tscn") 
 
 # “退出游戏”按钮被点击时的逻辑
