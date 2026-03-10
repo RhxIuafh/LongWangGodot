@@ -4,12 +4,14 @@ extends Node2D
 @export var settings_scene: PackedScene # 设置场景
 @export var longwang_battle: PackedScene   # 第三个场景（战斗场景）
 
+var gaoer = FighterData.new("高尔", 10, [1,1,1], [0,0,0])
+var duoluoxi = FighterData.new("高尔", 10, [1,1,1], [0,0,0])
+var yilaien = FighterData.new("高尔", 10, [1,1,1], [0,0,0])
 # 这里用占位符，实际使用时替换为真实资源
 var heroes_data = [
-	{"name": "高尔", "texture": preload("res://icon.svg")}, 
-	{"name": "伊莱恩", "texture": preload("res://icon.svg")},
-	{"name": "多萝西", "texture": preload("res://icon.svg")},
-	# ... 添加更多英雄
+	{"fighter": gaoer, "texture": preload("res://icon.svg")}, 
+	{"fighter": yilaien, "texture": preload("res://icon.svg")},
+	{"fighter": duoluoxi, "texture": preload("res://icon.svg")},
 ]
 
 # --- 状态变量 ---
@@ -52,7 +54,7 @@ func setup_hero_cards() -> void:
 		btn.custom_minimum_size = Vector2(100, 140) # 卡片大小
 		
 		btn.icon = data["texture"]
-		btn.tooltip_text = data["name"]
+		btn.tooltip_text = data["fighter"].get_name()
 		
 		# 关键：连接悬停信号实现放大效果
 		btn.mouse_entered.connect(_on_card_mouse_entered.bind(btn))

@@ -51,6 +51,7 @@ func init_game_data() -> void:
 	for i in range(HAND_SIZE):
 		p1_hand.append({"id": i, "name": "P1_卡%d" % i, "power": randi_range(1, 10)})
 		p2_hand.append({"id": i, "name": "P2_卡%d" % i, "power": randi_range(1, 10)})
+		
 	
 	# 更新距离和骰子 (示例)
 	update_distance("中")
@@ -68,7 +69,6 @@ func start_round() -> void:
 	round_number += 1
 	p1_played_card.clear()
 	p2_played_card.clear()
-	
 	# 重置手牌显示 (如果需要每回合抽牌，在这里逻辑)
 	render_hand(p1_hand_container, p1_hand, true) # P1 可见
 	render_hand(p2_hand_container, p2_hand, true) # P2 背面
@@ -76,7 +76,7 @@ func start_round() -> void:
 	current_state = TurnState.P1_TURN
 	update_ui_text("玩家 1 (P1) 请出牌")
 	move_camera_to(p1_hero_pos.global_position)
-	
+
 	# P2 手牌此时应该不可交互或隐藏
 	set_hand_interactive(p1_hand_container, true)
 	set_hand_interactive(p2_hand_container, false)
@@ -131,6 +131,7 @@ func play_card_animation_and_resolve() -> void:
 	# 恢复按钮，等待玩家点击“下一回合”
 	current_state = TurnState.RESOLVING # 保持状态直到点击按钮
 	update_ui_text("结算完成！点击按钮进入下一回合")
+
 	turn_button.disabled = false
 	turn_button.text = "下一回合"
 	
@@ -158,6 +159,7 @@ func reveal_cards() -> void:
 	# 修改中间卡牌节点的 texture 为正面图
 	flip_center_cards_to_face_up()
 
+
 func resolve_combat() -> void:
 	# 简单的战斗力比较
 	var p1_power = p1_played_card.get("power", 0)
@@ -181,7 +183,7 @@ func render_hand(container: HFlowContainer, hand_data: Array, is_visible_face: b
 	# 清空旧牌
 	for child in container.get_children():
 		child.queue_free()
-		
+
 	for card_data in hand_data:
 		var card_btn = Button.new()
 		card_btn.custom_minimum_size = Vector2(80, 120)
@@ -201,12 +203,12 @@ func render_hand(container: HFlowContainer, hand_data: Array, is_visible_face: b
 func _on_card_selected(card_data: Dictionary, container: HFlowContainer) -> void:
 	print("ddddddddddd点击")
 	if current_state == TurnState.P1_TURN and container == p1_hand_container:
-		p1_played_card = card_data
+		p1_played_card = card_data.duplicate(true)
 		highlight_selected_card(container, card_data)
 		message_label.text = "P1 已选牌，请点击过回合让 P2 出牌"
 		
 	elif current_state == TurnState.P2_TURN and container == p2_hand_container:
-		p2_played_card = card_data
+		p2_played_card = card_data.duplicate(true)
 		highlight_selected_card(container, card_data)
 		message_label.text = "P2 已选牌，请点击过回合进行结算"
 
