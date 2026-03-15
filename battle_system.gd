@@ -189,11 +189,7 @@ func settle_damage(card1: Variant, card2: Variant) -> ResultData:
 			final_result = ResultData.new(1, 0, Skill.MOVE, 2)
 			
 	# P2 命中结算 (如果 P1 没命中 或者 双方都命中但 P2 赢)
-	# 注意：Python 逻辑是 if...elif... 所以如果 P1 命中了，P2 就不会再结算伤害了 (除非是特殊规则，但这里看起来是互斥的)
-	# 等等，Python 代码里：
-	# if hit1 == 1: return Result(1...)
-	# elif hit2 == 1: return Result(2...)
-	# 这意味着同一回合只有一方能造成伤害？是的，这是该游戏的规则。
+	# 如果 P1 命中了，P2 就不会再结算伤害了
 	
 	elif hit2 == 1:
 		if is_action2:
