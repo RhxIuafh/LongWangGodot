@@ -1,0 +1,85 @@
+[gd_scene format=3 uid="uid://s84xp1ngwgi1"]
+
+[ext_resource type="Texture2D" uid="uid://blkwk243mhthg" path="res://icon.svg" id="1_r4hd8"]
+[ext_resource type="Script" uid="uid://c482a522cqayk" path="res://state_manager.gd" id="2_to248"]
+[ext_resource type="PackedScene" uid="uid://bdqoouptsc2op" path="res://settings_scene.tscn" id="3_s5daj"]
+[ext_resource type="PackedScene" uid="uid://cyegncllpxmfj" path="res://longwang_battle.tscn" id="4_pebo0"]
+
+[node name="Node2D" type="Node2D" unique_id=178173846]
+
+[node name="CharacterSelect" type="Control" parent="." unique_id=601052303]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Background" type="TextureRect" parent="CharacterSelect" unique_id=217687358]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TitleLabel" type="Label" parent="CharacterSelect" unique_id=1654398030]
+layout_mode = 0
+offset_left = 544.0
+offset_top = 55.0
+offset_right = 656.0
+offset_bottom = 78.0
+text = "请选择你的英雄"
+
+[node name="VS_Container" type="HBoxContainer" parent="CharacterSelect" unique_id=1087527856]
+layout_mode = 0
+offset_left = 465.0
+offset_top = 140.0
+offset_right = 748.0
+offset_bottom = 268.0
+
+[node name="P1_Display" type="PanelContainer" parent="CharacterSelect/VS_Container" unique_id=262972844]
+layout_mode = 2
+
+[node name="P1_Sprite" type="TextureRect" parent="CharacterSelect/VS_Container/P1_Display" unique_id=1248988886]
+layout_mode = 2
+texture = ExtResource("1_r4hd8")
+
+[node name="VS_Label" type="Label" parent="CharacterSelect/VS_Container" unique_id=1317919854]
+layout_mode = 2
+text = "VS"
+
+[node name="P2_Display" type="PanelContainer" parent="CharacterSelect/VS_Container" unique_id=754759541]
+layout_mode = 2
+
+[node name="P2_Sprite" type="TextureRect" parent="CharacterSelect/VS_Container/P2_Display" unique_id=549140413]
+layout_mode = 2
+texture = ExtResource("1_r4hd8")
+
+[node name="HeroGrid" type="ScrollContainer" parent="CharacterSelect" unique_id=2078594301]
+layout_mode = 0
+offset_left = 161.0
+offset_top = 146.0
+offset_right = 361.0
+offset_bottom = 546.0
+
+[node name="HeroList" type="HFlowContainer" parent="CharacterSelect/HeroGrid" unique_id=279614636]
+layout_mode = 2
+
+[node name="Footer" type="HBoxContainer" parent="CharacterSelect" unique_id=1042993399]
+layout_mode = 0
+offset_left = 967.0
+offset_top = 566.0
+offset_right = 1055.0
+offset_bottom = 606.0
+
+[node name="Settings" type="Button" parent="CharacterSelect/Footer" unique_id=2049139009]
+layout_mode = 2
+text = "设置"
+
+[node name="Spacer" type="Control" parent="CharacterSelect/Footer" unique_id=343915577]
+layout_mode = 2
+
+[node name="ConfirmButton" type="Button" parent="CharacterSelect/Footer" unique_id=1851356314]
+layout_mode = 2
+text = "确定"
+
+[node name="StateManager" type="Node2D" parent="CharacterSelect" unique_id=1425492503]
+script = ExtResource("2_to248")
+settings_scene = ExtResource("3_s5daj")
+longwang_battle = ExtResource("4_pebo0")

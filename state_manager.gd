@@ -5,8 +5,8 @@ extends Node2D
 @export var longwang_battle: PackedScene   # 第三个场景（战斗场景）
 
 var gaoer = FighterData.new("高尔", 10, [1,1,1], [0,0,0])
-var duoluoxi = FighterData.new("高尔", 10, [1,1,1], [0,0,0])
-var yilaien = FighterData.new("高尔", 10, [1,1,1], [0,0,0])
+var duoluoxi = FighterData.new("多萝西", 10, [1,1,1], [0,0,0])
+var yilaien = FighterData.new("伊莱恩", 10, [1,1,1], [0,0,0])
 # 这里用占位符，实际使用时替换为真实资源
 var heroes_data = [
 	{"fighter": gaoer, "texture": preload("res://icon.svg")}, 
@@ -84,11 +84,15 @@ func _on_card_pressed(data: Dictionary) -> void:
 	if current_player == 1:
 		# P1 选择
 		p1_selection = data
+		# print("P1data: ", data)
+		GameManager.p1_fighter_data = data
 		p1_sprite.texture = data["texture"]
 		current_player = 2 # 切换到 P2
 	elif current_player == 2:
 		# P2 选择
 		p2_selection = data
+		# print("P2data: ", data)
+		GameManager.p2_fighter_data = data
 		p2_sprite.texture = data["texture"]
 		# 两人都选好了
 		confirm_button.disabled = false

@@ -34,3 +34,4 @@ func get_longmai_set():
 
 func set_longmai_set(lms: Array[int]):
 	longmai_set = lms
+	

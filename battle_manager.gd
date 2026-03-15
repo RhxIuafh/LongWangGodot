@@ -4,12 +4,15 @@ extends Node2D
 @export var card_scene: PackedScene # 卡牌的预制体场景
 @export var dice_textures: Array[Texture2D] # [红, 绿, 蓝] 骰子纹理
 
+
+
 # --- 节点引用 ---
 @onready var camera: Camera2D = $"../Camera2D"
 @onready var p1_hero_pos: Node2D = $"../GameWorld/P1_HeroContainer"
 @onready var p2_hero_pos: Node2D = $"../GameWorld/P2_HeroContainer"
 @onready var center_pos: Node2D = $"../GameWorld/CenterInfo"
-
+@onready var p1_info: Label = $"../GameWorld/P1_HeroContainer/P1_Info"
+@onready var p2_info: Label = $"../GameWorld/P2_HeroContainer/P2_Info"
 @onready var p1_hand_container: HFlowContainer = $"../GameWorld/P1_HeroContainer/P1_HandContainer"
 @onready var p2_hand_container: HFlowContainer = $"../GameWorld/P2_HeroContainer/P2_HandContainer"
 
@@ -26,7 +29,8 @@ extends Node2D
 enum TurnState { P1_TURN, P2_TURN, RESOLVING, GAME_OVER }
 var current_state: TurnState = TurnState.P1_TURN
 var round_number: int = 1
-
+# 工具类
+var bs: BattleSystem = BattleSystem.new() 
 # 手牌数据 (示例)
 var p1_hand: Array = []
 var p2_hand: Array = []
@@ -41,23 +45,38 @@ const CAMERA_SPEED = 1.0
 
 func _ready() -> void:
 	# 初始化游戏
+	bs.reset_game()
 	init_game_data()
 	setup_ui()
 	start_round()
 
 # --- 初始化 ---
 func init_game_data() -> void:
-	# 生成假手牌数据
-	for i in range(HAND_SIZE):
-		p1_hand.append({"id": i, "name": "P1_卡%d" % i, "power": randi_range(1, 10)})
-		p2_hand.append({"id": i, "name": "P2_卡%d" % i, "power": randi_range(1, 10)})
-		
+	# 生成手牌数据
+	p1_hand.append({"name": "前进", "action_type": bs.ActionType.ADVANCE})
+	p1_hand.append({"name": "后退", "action_type": bs.ActionType.BACK})
+	p1_hand.append({"name": "突袭", "action_type": bs.ActionType.STONE1})
+	p1_hand.append({"name": "强袭", "action_type": bs.ActionType.STONE2})
+	p1_hand.append({"name": "狙击", "action_type": bs.ActionType.SCISSOR1})
+	p1_hand.append({"name": "爆裂射击", "action_type": bs.ActionType.SCISSOR2})
+	p1_hand.append({"name": "古典咏唱", "action_type": bs.ActionType.CLOTH1})
+	p1_hand.append({"name": "新式咏唱", "action_type": bs.ActionType.CLOTH2})
+	
+	# p2_hand.append({"id": i, "name": "P2_卡%d" % i, "power": randi_range(1, 10)})
+	p2_hand.append({"name": "前进", "action_type": bs.ActionType.ADVANCE})
+	p2_hand.append({"name": "后退", "action_type": bs.ActionType.BACK})
+	p2_hand.append({"name": "突袭", "action_type": bs.ActionType.STONE1})
+	p2_hand.append({"name": "强袭", "action_type": bs.ActionType.STONE2})
+	p2_hand.append({"name": "狙击", "action_type": bs.ActionType.SCISSOR1})
+	p2_hand.append({"name": "爆裂射击", "action_type": bs.ActionType.SCISSOR2})
+	p2_hand.append({"name": "古典咏唱", "action_type": bs.ActionType.CLOTH1})
+	p2_hand.append({"name": "新式咏唱", "action_type": bs.ActionType.CLOTH2})
 	
 	# 更新距离和骰子 (示例)
-	update_distance("中")
-	roll_dice()
+	update_distance(bs.longmai_data.distance)
 
 func setup_ui() -> void:
+	turn_button.text = "过"
 	turn_button.pressed.connect(_on_turn_button_pressed)
 	turn_button.disabled = false
 	# 初始隐藏手牌容器，等轮到谁再显示/聚焦
@@ -67,8 +86,13 @@ func setup_ui() -> void:
 # 回合流程控制
 func start_round() -> void:
 	round_number += 1
+	print("回合数: ", round_number - 1)
+	turn_button.text = "过"
 	p1_played_card.clear()
 	p2_played_card.clear()
+	# 渲染角色
+	render_hero_data(p1_info, bs.fighter1)
+	render_hero_data(p2_info, bs.fighter2)
 	# 重置手牌显示 (如果需要每回合抽牌，在这里逻辑)
 	render_hand(p1_hand_container, p1_hand, true) # P1 可见
 	render_hand(p2_hand_container, p2_hand, true) # P2 背面
@@ -113,6 +137,7 @@ func _on_turn_button_pressed() -> void:
 			play_card_animation_and_resolve()
 			
 		TurnState.RESOLVING:
+			update_distance(bs.longmai_data.distance)
 			# 结算完毕，下一回合
 			start_round()
 
@@ -161,22 +186,45 @@ func reveal_cards() -> void:
 
 
 func resolve_combat() -> void:
-	# 简单的战斗力比较
-	var p1_power = p1_played_card.get("power", 0)
-	var p2_power = p2_played_card.get("power", 0)
-	
-	var result_text = ""
-	if p1_power > p2_power:
-		result_text = "P1 获胜！"
-	elif p2_power > p1_power:
-		result_text = "P2 获胜！"
-	else:
-		result_text = "平局！"
-	
-	message_label.text = "结果: %s (P1:%d vs P2:%d)" % [result_text, p1_power, p2_power]
-	# 这里播放受击动画、扣血
-
+	var p1_action = bs.get_card_action(p1_played_card.get("action_type"))
+	var p2_action = bs.get_card_action(p2_played_card.get("action_type"))
+	# 距离结算
+	bs.settle_distance(p1_action, p2_action)
+	# 伤害结算
+	var result_data: BattleSystem.ResultData = bs.settle_damage(p1_action, p2_action)
+	print("结算结果", result_data)
+	# 更新血量状态
+	if result_data is BattleSystem.ResultData and  result_data.hit_player == 1:
+		bs.fighter2.health -= result_data.damage
+	elif result_data is BattleSystem.ResultData and result_data.hit_player == 2:
+		bs.fighter2.health -= result_data.damage
+		
 # 辅助功能
+
+# 角色数据显示函数
+func render_hero_data(player_info: Label, fighter: FighterData):
+	# 1. 安全检查：防止传入空对象导致崩溃
+	if player_info == null or fighter == null:
+		push_warning("render_hero_data: 传入的 Label 或 FighterData 为空！")
+		return
+
+	# 2. 获取数据
+	var p_name: String = fighter.get_name()
+	var hp: int = fighter.get_health()
+	var bonuses: Array[int] = fighter.get_bonus()
+	var longmai: Array[int] = fighter.get_longmai_set()
+
+	# 3. 格式化字符串 (使用 \n 换行)
+	# 假设 bonus 顺序是：石头(0), 剪刀(1), 布(2)
+	var text_content: String = ""
+	text_content += "【%s】\n" % p_name
+	text_content += "HP: %d / 10\n" % hp 
+	text_content += "加成: ⚒️%d  ✂️%d  📄%d\n" % [bonuses[0], bonuses[1], bonuses[2]]
+	text_content += "龙脉: [%d, %d, %d]" % [longmai[0], longmai[1], longmai[2]]
+
+	# 4. 赋值给 Label
+	player_info.text = text_content
+	
 
 # 渲染手牌
 func render_hand(container: HFlowContainer, hand_data: Array, is_visible_face: bool) -> void:
@@ -233,15 +281,13 @@ func move_camera_to(target_pos: Vector2) -> void:
 	tween.parallel().tween_property(camera, "position", target_pos, CAMERA_SPEED).set_trans(Tween.TRANS_QUAD)
 	tween.parallel().tween_property(camera, "zoom", Vector2(1.2, 1.2), CAMERA_SPEED).set_trans(Tween.TRANS_QUAD)
 
-func update_distance(dist: String) -> void:
-	distance_label.text = "距离：" + dist
-
-func roll_dice() -> void:
-	# 随机显示三个骰子颜色/点数
-	for i in range(3):
-		if dice_nodes[i]:
-			dice_nodes[i].texture = dice_textures[randi() % dice_textures.size()]
-
+func update_distance(dist: BattleSystem.Distance) -> void:
+	if dist == bs.Distance.CLOSE:
+		distance_label.text = "距离：" + "近"
+	elif dist == bs.Distance.MID:
+		distance_label.text = "距离：" + "中"
+	elif dist == bs.Distance.FAR:
+		distance_label.text = "距离：" + "远"
 # 占位函数 (实现具体的节点操作)
 func hide_played_card_in_hand(container: HFlowContainer, data: Dictionary): pass
 func create_face_down_card_at_center(): pass
