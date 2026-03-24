@@ -34,7 +34,7 @@ theme_override_constants/separation = 50
 
 [node name="StartButton" type="Button" parent="StartScreen/ButtonContainer" unique_id=954251632]
 layout_mode = 2
-text = "开始游戏"
+text = "热座模式"
 script = ExtResource("2_8lvxe")
 
 [node name="ExitButton" type="Button" parent="StartScreen/ButtonContainer" unique_id=482941460]

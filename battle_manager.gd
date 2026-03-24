@@ -99,7 +99,9 @@ func start_round() -> void:
 	
 	current_state = TurnState.P1_TURN
 	update_ui_text("玩家 1 (P1) 请出牌")
-	move_camera_to(p1_hero_pos.global_position)
+	# move_camera_to(center_pos.global_position)
+	focus_camera_on(center_pos.global_position, 0.7, 1.5)
+	# move_camera_to(p1_hero_pos.global_position)
 
 	# P2 手牌此时应该不可交互或隐藏
 	set_hand_interactive(p1_hand_container, true)
@@ -115,7 +117,7 @@ func _on_turn_button_pressed() -> void:
 			
 			current_state = TurnState.P2_TURN
 			update_ui_text("玩家 2 (P2) 请出牌")
-			move_camera_to(p2_hero_pos.global_position)
+			# move_camera_to(p2_hero_pos.global_position)
 			set_hand_interactive(p1_hand_container, false)
 			set_hand_interactive(p2_hand_container, true)
 			
@@ -133,7 +135,7 @@ func _on_turn_button_pressed() -> void:
 			set_hand_interactive(p2_hand_container, false)
 			
 			# 镜头移向中间
-			move_camera_to(center_pos.global_position)
+			# move_camera_to(center_pos.global_position)
 			play_card_animation_and_resolve()
 			
 		TurnState.RESOLVING:
@@ -161,7 +163,7 @@ func play_card_animation_and_resolve() -> void:
 	turn_button.text = "下一回合"
 	
 	# 镜头回到中间
-	move_camera_to(center_pos.global_position)
+	# move_camera_to(center_pos.global_position)
 
 func move_cards_to_table() -> void:
 	# 使用 Tween 将具体的卡牌节点飞到中间
@@ -280,6 +282,41 @@ func move_camera_to(target_pos: Vector2) -> void:
 	# 稍微加一点缩放效果，增强聚焦感
 	tween.parallel().tween_property(camera, "position", target_pos, CAMERA_SPEED).set_trans(Tween.TRANS_QUAD)
 	tween.parallel().tween_property(camera, "zoom", Vector2(1.2, 1.2), CAMERA_SPEED).set_trans(Tween.TRANS_QUAD)
+	
+# 镜头缩放控制函数
+func zoom_camera_to(target_zoom: float, duration: float = -1.0) -> void:
+	if camera == null:
+		push_warning("zoom_camera_to: Camera 节点未找到！")
+		return
+
+	# 如果未指定时间，使用默认速度
+	var tween_time = duration if duration > 0 else CAMERA_SPEED
+
+	# 限制缩放范围，防止缩得太小看不见或太大穿模 (可选)
+	# 例如：最小 0.5 倍，最大 3.0 倍
+	target_zoom = clamp(target_zoom, 0.5, 3.0)
+
+	var tween = create_tween()
+	
+	# 执行缩放动画
+	# 注意：zoom 是 Vector2，所以目标值要写成 Vector2(target_zoom, target_zoom)
+	tween.tween_property(camera, "zoom", Vector2(target_zoom, target_zoom), tween_time)\
+		.set_trans(Tween.TRANS_QUAD)\
+		.set_ease(Tween.EASE_IN_OUT)
+
+# 移动加缩放
+func focus_camera_on(target_pos: Vector2, target_zoom: float = 1.0, duration: float = -1.0) -> void:
+	if camera == null: return
+	
+	var tween_time = duration if duration > 0 else CAMERA_SPEED
+	target_zoom = clamp(target_zoom, 0.5, 3.0)
+
+	var tween = create_tween()
+	
+	# 并行执行：位置移动 + 缩放
+	tween.parallel().tween_property(camera, "position", target_pos, tween_time).set_trans(Tween.TRANS_QUAD)
+	tween.parallel().tween_property(camera, "zoom", Vector2(target_zoom, target_zoom), tween_time).set_trans(Tween.TRANS_QUAD)
+
 
 func update_distance(dist: BattleSystem.Distance) -> void:
 	if dist == bs.Distance.CLOSE:

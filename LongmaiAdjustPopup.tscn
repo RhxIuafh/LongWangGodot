@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://b2j7lqyq0lu70"]
+
+[ext_resource type="Script" uid="uid://b0ait80cuj06j" path="res://LongmaiAdjustPopup.gd" id="1_w81ty"]
+
+[node name="LongmaiAdjustPopup" type="Control" unique_id=2020532021]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_w81ty")
+
+[node name="Panel" type="Panel" parent="." unique_id=1278958497]
+layout_mode = 0
+offset_left = 218.0
+offset_top = 60.0
+offset_right = 918.0
+offset_bottom = 560.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel" unique_id=1035529021]
+layout_mode = 0
+offset_left = 313.0
+offset_top = 176.0
+offset_right = 713.0
+offset_bottom = 476.0
+
+[node name="Label" type="Label" parent="Panel/VBoxContainer" unique_id=1298692019]
+layout_mode = 2
+text = "龙脉波动！"
+
+[node name="InfoLabel" type="Label" parent="Panel/VBoxContainer" unique_id=2070006228]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBoxContainer" unique_id=1649974806]
+layout_mode = 2
+
+[node name="BtnMinus" type="Button" parent="Panel/VBoxContainer/HBoxContainer" unique_id=760410022]
+layout_mode = 2
+text = "减少"
+
+[node name="BtnPlus" type="Button" parent="Panel/VBoxContainer/HBoxContainer" unique_id=1450123870]
+layout_mode = 2
+text = "增加"
